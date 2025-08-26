@@ -4,7 +4,7 @@ build-backend = "flit_core.buildapi"
 
 [project]
 name = "deepchem_utils"
-version = "0.0.1"
+version = "0.1.0"
 description = "Custom utility functions and classes for DL model exploration with DeepChem"
 authors = [
   { name = "Dr. Freddy A. Bernal" },
@@ -16,7 +16,19 @@ classifiers = [
     "License :: OSI Approved :: MIT License"
 ]
 requires-python = "~=3.9"
+dependencies = [
+  "deepchem==2.8.0",
+  "rdkit",
+  "ruff",
+  "scikit-learn",
+  "tqdm",
+]
 
+[project.urls]
+Repository = "https://github.com/BernalFA/deepchem-utils"
+
+[tool.flit.package]
+name = "deepchem_utils"
 
 [tool.ruff]
 line-length = 99
