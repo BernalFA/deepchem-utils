@@ -27,9 +27,6 @@ dependencies = [
 [project.urls]
 Repository = "https://github.com/BernalFA/deepchem-utils"
 
-[tool.flit.package]
-name = "deepchem_utils"
-
 [tool.ruff]
 line-length = 99
 src = ["deepchem_utils"]
