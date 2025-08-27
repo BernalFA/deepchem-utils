@@ -4,7 +4,7 @@
     <img src="https://img.shields.io/badge/CCDS-Project%20template-328F97?logo=cookiecutter" />
 </a>
 
-<br>
+</br>
 
 Custom utility functions and classes for DL model exploration with [DeepChem](https://github.com/deepchem/deepchem). Most of them are wrappers to existing `DeepChem` objects.
 
@@ -16,7 +16,7 @@ Custom utility functions and classes for DL model exploration with [DeepChem](ht
 from deepchem_utils.dataset import prepare_dataset
 
 train_dataset, valid_dataset, transformer = prepare_dataset(
-    filepath=path_data / "dataset_RandomStratifiedSplit.csv",
+    filepath=path_to_data,  # CSV file
     model_name="GraphConvModel",
     valid_indices=valid_indices,
     test_indices=test_indices
@@ -37,7 +37,7 @@ run_hyperopt_search(
     valid_dataset=valid_dataset,
     params_dict=params_dict,
     metrics=f1,
-    output_filepath=HERE / "data",
+    output_filepath="data",
     transformer=transformer
 )
 ```
@@ -53,7 +53,7 @@ experiment = SelectEpochs(
     metrics=[f1],
     frequency=2,
     nb_epoch=100,
-    output_file=HERE / "data" / "GraphConvModel_valid_callback.csv"
+    output_file="data/GraphConvModel_valid_callback.csv"
 )
 experiment.repeated_evaluation(train_dataset, valid_dataset, transformer, n_times=5)
 ```
