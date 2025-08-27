@@ -3,7 +3,7 @@ import math
 from deepchem_utils.config import FEATURIZERS
 
 
-def featurizer4model(model_name):
+def featurizer4model(model_name: str):
     if model_name in ["GraphConvModel", "DAGModel"]:
         featurizer = FEATURIZERS["ConvMolFeaturizer"]
     elif model_name in ["MPNNModel", "GATModel", "GCNModel", "AttentiveFPModel"]:
@@ -16,14 +16,14 @@ def featurizer4model(model_name):
 
 
 class IntervalEpochConv:
-    def __init__(self, dataset_size, batch_size):
+    def __init__(self, dataset_size: int, batch_size: int):
         self.dataset_size = dataset_size
         self.batch_size = batch_size
 
-    def calculate_interval(self, frequency=2):
+    def calculate_interval(self, frequency: int = 2):
         steps_per_epoch = math.ceil(self.dataset_size / self.batch_size)
         return steps_per_epoch / frequency
 
-    def calculate_early_stopping_epoch(self, step):
+    def calculate_early_stopping_epoch(self, step: int):
         steps_per_epoch = math.ceil(self.dataset_size / self.batch_size)
         return round(step / steps_per_epoch, 2)

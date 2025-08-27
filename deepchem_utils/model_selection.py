@@ -1,6 +1,7 @@
 import time
 import json
 from pathlib import Path
+from typing import Union
 
 import deepchem as dc
 import pandas as pd
@@ -11,8 +12,11 @@ from deepchem_utils.config import MODELS
 from deepchem_utils.utils import IntervalEpochConv
 
 
-def run_hyperopt_search(model_name, train_dataset, valid_dataset, params_dict, metrics,
-                        output_filepath, transformer):
+def run_hyperopt_search(model_name: str, train_dataset: dc.data.Dataset,
+                        valid_dataset: dc.data.Dataset, params_dict: dict,
+                        metrics: dc.metrics.Metric,
+                        output_filepath: Union[str, Path],
+                        transformer: Union[dc.trans.Transformer, list]):
     start = time.time()
     optimizer = dc.hyper.GridHyperparamOpt(MODELS[model_name])
     best_model, best_hyperparams, all_results = optimizer.hyperparam_search(
@@ -35,7 +39,7 @@ def run_hyperopt_search(model_name, train_dataset, valid_dataset, params_dict, m
             json.dump(best_hyperparams, file, indent=4)
 
 
-def get_best_steps_number(df, patience=3):
+def get_best_steps_number(df: pd.DataFrame, patience: int = 3) -> pd.Series:
     tmp = df.groupby(by="step").agg("mean")
 
     best_steps = []
@@ -60,7 +64,8 @@ def get_best_steps_number(df, patience=3):
 
 
 class SelectEpochs:
-    def __init__(self, model_name, params, metrics, frequency, nb_epoch, output_file):
+    def __init__(self, model_name: str, params: dict, metrics: list, frequency: int,
+                 nb_epoch: int, output_file: Union[str, Path]):
         self.model_name = model_name
         self.params = params
         self.metrics = metrics
@@ -69,8 +74,9 @@ class SelectEpochs:
         self.output_file = output_file
 
     def repeated_evaluation(
-        self, train_dataset, valid_dataset, transformer=[], n_times=5
-    ):
+        self, train_dataset: dc.data.Dataset, valid_dataset: dc.data.Dataset,
+        transformer: Union[dc.trans.Transformer, list] = [], n_times: int = 5
+    ) -> list[int]:
         self._set_converter(train_dataset)
         callback = self._set_callback(
             valid_dataset=valid_dataset,
@@ -84,7 +90,8 @@ class SelectEpochs:
             epochs = self._select_early_stop()
         return epochs
 
-    def evaluation(self, train_dataset, valid_dataset, transformer=[]):
+    def evaluation(self, train_dataset: dc.data.Dataset, valid_dataset: dc.data.Dataset,
+                   transformer: Union[dc.trans.Transformer, list] = []) -> list[int]:
         self._set_converter(train_dataset)
         callback = self._set_callback(
             valid_dataset=valid_dataset,
@@ -97,21 +104,25 @@ class SelectEpochs:
             epochs = self._select_early_stop()
         return epochs
 
-    def _set_callback(self, valid_dataset, interval, transformer):
+    def _set_callback(
+            self, valid_dataset: dc.data.Dataset, interval: int,
+            transformer: Union[dc.trans.Transformer, list]
+    ) -> CustomValidationCallback:
         callback = CustomValidationCallback(
             valid_dataset, interval=interval, metrics=self.metrics,
             output_file=self.output_file,
+            transformers=transformer,
             save_on_minimum=False
         )
         return callback
 
-    def _set_converter(self, train_dataset):
+    def _set_converter(self, train_dataset: dc.data.Dataset):
         self._converter = IntervalEpochConv(
             train_dataset.X.shape[0], self.params["batch_size"]
         )
         return None
 
-    def _select_early_stop(self):
+    def _select_early_stop(self) -> list[int]:
         res = pd.read_csv(self.output_file)
         best = get_best_steps_number(res)
         epochs = []
