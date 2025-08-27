@@ -1,13 +1,23 @@
 name: deepchem-utils
 channels:
   - conda-forge
+  - pytorch
+  - dglteam/label/th22_cpu
 dependencies:
-  - deepchem==2.8.0
+  - numpy=1.26.4
   - python=3.9
   - pip
+  - pytorch::pytorch=2.2.1
   - rdkit
   - ruff
   - scikit-learn
   - tqdm
   - pip:
     - mkdocs
+    - deepchem==2.8.0
+    - dgl
+    - dgllife
+    - tensorflow==2.15
+    - tensorflow-probability==0.23
+    - torch_geometric
+    - transformers

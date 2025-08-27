@@ -17,6 +17,7 @@ classifiers = [
 ]
 requires-python = "~=3.9"
 dependencies = [
+  "numpy==1.26.4",
   "deepchem==2.8.0",
   "rdkit",
   "ruff",
