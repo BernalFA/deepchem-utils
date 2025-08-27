@@ -4,7 +4,7 @@
     <img src="https://img.shields.io/badge/CCDS-Project%20template-328F97?logo=cookiecutter" />
 </a>
 
-</br>
+<br/>
 
 Custom utility functions and classes for DL model exploration with [DeepChem](https://github.com/deepchem/deepchem). Most of them are wrappers to existing `DeepChem` objects.
 
