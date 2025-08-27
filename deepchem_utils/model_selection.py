@@ -59,7 +59,7 @@ def get_best_steps_number(df, patience=3):
     return tmp.loc[best_steps]
 
 
-class EvaluateBestModels:
+class SelectEpochs:
     def __init__(self, model_name, params, metrics, frequency, nb_epoch, output_file):
         self.model_name = model_name
         self.params = params
