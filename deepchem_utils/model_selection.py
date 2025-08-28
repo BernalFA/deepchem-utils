@@ -100,7 +100,7 @@ class SelectEpochs:
     def repeated_evaluation(
         self, train_dataset: dc.data.Dataset, valid_dataset: dc.data.Dataset,
         transformer: Union[dc.trans.Transformer, list] = [], n_times: int = 5
-    ) -> list[int]:
+    ) -> int:
         self._set_converter(train_dataset)
         callback = self._set_callback(
             valid_dataset=valid_dataset,
