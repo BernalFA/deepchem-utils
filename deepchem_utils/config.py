@@ -18,3 +18,14 @@ MODELS = {
     "GATModel": dc.models.torch_models.GATModel,
     "DAGModel": dc.models.DAGModel,
 }
+
+
+class StepNotFoundError(Exception):
+    """Exception raise for unsuccessful search of the best epoch/step for model training
+    as implemented with model_Selection.get_best_steps_number.
+    """
+    def __init__(
+            self,
+            message="None of the steps shows statistically significant improvement"
+    ):
+        super().__init__(message)
