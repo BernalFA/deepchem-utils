@@ -128,7 +128,10 @@ class SelectEpochs:
         model = MODELS[self.model_name](**self.params)
         model.fit(train_dataset, nb_epoch=self.nb_epoch, callbacks=callback)
         if Path.exists(self.output_file):
-            epochs = self._select_early_stop()
+            try:
+                epochs = self._select_early_stop()
+            except Exception as e:
+                epochs = e
         return epochs
 
     def _set_callback(
