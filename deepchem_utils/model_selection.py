@@ -100,7 +100,7 @@ class SelectEpochs:
     def repeated_evaluation(
         self, train_dataset: dc.data.Dataset, valid_dataset: dc.data.Dataset,
         transformer: Union[dc.trans.Transformer, list] = [], n_times: int = 5
-    ) -> int:
+    ) -> Union[int, str]:
         self._set_converter(train_dataset)
         callback = self._set_callback(
             valid_dataset=valid_dataset,
@@ -117,8 +117,10 @@ class SelectEpochs:
                 epochs = e
         return epochs
 
-    def evaluation(self, train_dataset: dc.data.Dataset, valid_dataset: dc.data.Dataset,
-                   transformer: Union[dc.trans.Transformer, list] = []) -> list[int]:
+    def evaluation(
+            self, train_dataset: dc.data.Dataset, valid_dataset: dc.data.Dataset,
+            transformer: Union[dc.trans.Transformer, list] = []
+    ) -> Union[int, str]:
         self._set_converter(train_dataset)
         callback = self._set_callback(
             valid_dataset=valid_dataset,
@@ -152,7 +154,7 @@ class SelectEpochs:
         )
         return None
 
-    def select_early_stop(self) -> Optional[int]:
+    def select_early_stop(self) -> Union[int, str]:
         res = pd.read_csv(self.output_file)
         best = get_best_steps_number(res)
         # check an actual value was found
