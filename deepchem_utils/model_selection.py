@@ -112,7 +112,7 @@ class SelectEpochs:
             model.fit(train_dataset, nb_epoch=self.nb_epoch, callbacks=callback)
         if Path.exists(self.output_file):
             try:
-                epochs = self.select_early_stop()
+                epochs = self._select_early_stop()
             except Exception as e:
                 epochs = e
         return epochs
@@ -131,7 +131,7 @@ class SelectEpochs:
         model.fit(train_dataset, nb_epoch=self.nb_epoch, callbacks=callback)
         if Path.exists(self.output_file):
             try:
-                epochs = self.select_early_stop()
+                epochs = self._select_early_stop()
             except Exception as e:
                 epochs = e
         return epochs
@@ -154,7 +154,7 @@ class SelectEpochs:
         )
         return None
 
-    def select_early_stop(self) -> Union[int, str]:
+    def _select_early_stop(self) -> Union[int, str]:
         res = pd.read_csv(self.output_file)
         best = get_best_steps_number(res)
         # check an actual value was found
@@ -162,4 +162,11 @@ class SelectEpochs:
             epochs = self._converter.calculate_early_stopping_epoch(best)
         else:
             raise StepNotFoundError
+        return epochs
+
+    def select_early_stop_from_data(
+            self, train_dataset: dc.data.Dataset
+    ) -> Union[int, str]:
+        self._set_converter(train_dataset)
+        epochs = self._select_early_stop()
         return epochs
