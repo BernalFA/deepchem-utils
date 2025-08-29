@@ -168,5 +168,8 @@ class SelectEpochs:
             self, train_dataset: dc.data.Dataset
     ) -> Union[int, str]:
         self._set_converter(train_dataset)
-        epochs = self._select_early_stop()
+        try:
+            epochs = self._select_early_stop()
+        except Exception as e:
+            epochs = e
         return epochs
