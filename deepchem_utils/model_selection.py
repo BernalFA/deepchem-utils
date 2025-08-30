@@ -17,12 +17,12 @@ def run_hyperopt_search(model_name: str, train_dataset: dc.data.Dataset,
                         valid_dataset: dc.data.Dataset, params_dict: dict,
                         metrics: dc.metrics.Metric,
                         output_filepath: Union[str, Path],
-                        transformer: Union[dc.trans.Transformer, list]):
+                        transformers: list):
     start = time.time()
     optimizer = dc.hyper.GridHyperparamOpt(MODELS[model_name])
     best_model, best_hyperparams, all_results = optimizer.hyperparam_search(
         params_dict, train_dataset, valid_dataset, metrics,
-        output_transformers=transformer
+        output_transformers=transformers
     )
     end = time.time()
 
@@ -99,13 +99,13 @@ class SelectEpochs:
 
     def repeated_evaluation(
         self, train_dataset: dc.data.Dataset, valid_dataset: dc.data.Dataset,
-        transformer: Union[dc.trans.Transformer, list] = [], n_times: int = 5
+        transformers: list = [], n_times: int = 5
     ) -> Union[int, str]:
         self._set_converter(train_dataset)
         callback = self._set_callback(
             valid_dataset=valid_dataset,
             interval=self._converter.calculate_interval(self.frequency),
-            transformer=transformer
+            transformer=transformers
         )
         for _ in tqdm(range(n_times)):
             model = MODELS[self.model_name](**self.params)
