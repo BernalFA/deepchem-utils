@@ -17,12 +17,13 @@ def run_hyperopt_search(model_name: str, train_dataset: dc.data.Dataset,
                         valid_dataset: dc.data.Dataset, params_dict: dict,
                         metrics: dc.metrics.Metric,
                         output_filepath: Union[str, Path],
-                        transformers: list):
+                        transformers: list,
+                        nb_epoch: int = 10):
     start = time.time()
     optimizer = dc.hyper.GridHyperparamOpt(MODELS[model_name])
     best_model, best_hyperparams, all_results = optimizer.hyperparam_search(
         params_dict, train_dataset, valid_dataset, metrics,
-        output_transformers=transformers
+        output_transformers=transformers, nb_epoch=nb_epoch
     )
     end = time.time()
 
