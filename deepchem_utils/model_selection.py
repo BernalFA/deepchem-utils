@@ -1,7 +1,8 @@
 import time
 import json
+import warnings
 from pathlib import Path
-from typing import Union, Optional
+from typing import Union
 
 import deepchem as dc
 import pandas as pd
@@ -9,7 +10,7 @@ from scipy import stats
 from tqdm import tqdm
 
 from deepchem_utils.callback import CustomValidationCallback
-from deepchem_utils.config import MODELS, StepNotFoundError
+from deepchem_utils.config import MODELS
 from deepchem_utils.utils import IntervalEpochConv
 
 
@@ -42,7 +43,7 @@ def run_hyperopt_search(model_name: str, train_dataset: dc.data.Dataset,
 
 
 def get_best_steps_number(df: pd.DataFrame, alpha: int = 0.05, patience: int = 3,
-                          max_step_fraction: float = 0.85) -> Optional[int]:
+                          max_step_fraction: float = 0.85) -> int:
     # Define column for metrics and group dataframe
     col = [col for col in df.columns if col != "step"][0]
     grouped = df.groupby("step")[col]
@@ -67,25 +68,36 @@ def get_best_steps_number(df: pd.DataFrame, alpha: int = 0.05, patience: int = 3
             best_step = step
             selected_steps.append(step)
 
-    # Iterate over selected steps and check differences and patience
-    filtered = []
-    for i in range(len(selected_steps) - 1):
-        idx1 = selected_steps[i]
-        idx2 = selected_steps[i + 1]
-        _, p = stats.ttest_ind(grouped.get_group(idx1), grouped.get_group(idx2),
-                               equal_var=False)
-        if (p < alpha) and (idx2 - idx1 > patience):
-            filtered.append(idx2)
+    # Check any step was selected
+    if selected_steps:
+        # Iterate over selected steps and check differences and patience
+        filtered = []
+        for i in range(len(selected_steps) - 1):
+            idx1 = selected_steps[i]
+            idx2 = selected_steps[i + 1]
+            _, p = stats.ttest_ind(grouped.get_group(idx1), grouped.get_group(idx2),
+                                   equal_var=False)
+            if (p < alpha) and (idx2 - idx1 > patience):
+                filtered.append(idx2)
 
-    # Define best value as maximum if reached before 85% of the validation process
-    if filtered:
-        overall_best_step = max(filtered)
-        top = keys[-1] - keys[-1] * (1 - max_step_fraction)
-        # print(selected, top)
-        if overall_best_step > top:
-            overall_best_step = max([i for i in filtered if i != overall_best_step])
-        return overall_best_step
-    return None
+        # Define best value as maximum if reached before 85% of the validation process
+        if filtered:
+            overall_best_step = max(filtered)
+            top = keys[-1] - keys[-1] * (1 - max_step_fraction)
+            # print(selected, top)
+            if overall_best_step > top:
+                overall_best_step = max([i for i in filtered if i != overall_best_step])
+            return overall_best_step
+        else:
+            msg1 = f"No statistically significant improvement found within {patience=}."
+            msg2 = " Best absolute value returned."
+            warnings.warn(msg1 + msg2)
+            return best_step
+    else:
+        msg1 = "No statistically significant improvement found at any step."
+        msg2 = " Best absolute value returned."
+        warnings.warn(msg1 + msg2)
+        return best_step
 
 
 class SelectEpochs:
@@ -101,7 +113,7 @@ class SelectEpochs:
     def repeated_evaluation(
         self, train_dataset: dc.data.Dataset, valid_dataset: dc.data.Dataset,
         transformers: list = [], n_times: int = 5
-    ) -> Union[int, str]:
+    ) -> int:
         self._set_converter(train_dataset)
         callback = self._set_callback(
             valid_dataset=valid_dataset,
@@ -112,16 +124,13 @@ class SelectEpochs:
             model = MODELS[self.model_name](**self.params)
             model.fit(train_dataset, nb_epoch=self.nb_epoch, callbacks=callback)
         if Path.exists(self.output_file):
-            try:
-                epochs = self._select_early_stop()
-            except Exception as e:
-                epochs = e
+            epochs = self._select_early_stop()
         return epochs
 
     def evaluation(
             self, train_dataset: dc.data.Dataset, valid_dataset: dc.data.Dataset,
             transformer: Union[dc.trans.Transformer, list] = []
-    ) -> Union[int, str]:
+    ) -> int:
         self._set_converter(train_dataset)
         callback = self._set_callback(
             valid_dataset=valid_dataset,
@@ -131,10 +140,7 @@ class SelectEpochs:
         model = MODELS[self.model_name](**self.params)
         model.fit(train_dataset, nb_epoch=self.nb_epoch, callbacks=callback)
         if Path.exists(self.output_file):
-            try:
-                epochs = self._select_early_stop()
-            except Exception as e:
-                epochs = e
+            epochs = self._select_early_stop()
         return epochs
 
     def _set_callback(
@@ -155,22 +161,13 @@ class SelectEpochs:
         )
         return None
 
-    def _select_early_stop(self) -> Union[int, str]:
+    def _select_early_stop(self) -> int:
         res = pd.read_csv(self.output_file)
         best = get_best_steps_number(res)
-        # check an actual value was found
-        if best is not None:
-            epochs = self._converter.calculate_early_stopping_epoch(best)
-        else:
-            raise StepNotFoundError
+        epochs = self._converter.calculate_early_stopping_epoch(best)
         return epochs
 
-    def select_early_stop_from_data(
-            self, train_dataset: dc.data.Dataset
-    ) -> Union[int, str]:
+    def select_early_stop_from_data(self, train_dataset: dc.data.Dataset) -> int:
         self._set_converter(train_dataset)
-        try:
-            epochs = self._select_early_stop()
-        except Exception as e:
-            epochs = e
+        epochs = self._select_early_stop()
         return epochs
