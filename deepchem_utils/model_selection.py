@@ -5,7 +5,6 @@ from pathlib import Path
 from typing import Union
 
 import deepchem as dc
-import numpy as np
 import pandas as pd
 from scipy import stats
 from tqdm import tqdm
