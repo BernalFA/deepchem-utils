@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Union
 
 import deepchem as dc
+import numpy as np
 import pandas as pd
 from scipy import stats
 from tqdm import tqdm
@@ -79,7 +80,6 @@ def get_best_steps_number(df: pd.DataFrame, alpha: int = 0.05, patience: int = 3
                                    equal_var=False)
             if (p < alpha) and (idx2 - idx1 > patience):
                 filtered.append(idx2)
-
         # Define best value as maximum if reached before 85% of the validation process
         if filtered:
             overall_best_step = max(filtered)
@@ -97,6 +97,18 @@ def get_best_steps_number(df: pd.DataFrame, alpha: int = 0.05, patience: int = 3
         msg1 = "No statistically significant improvement found at any step."
         msg2 = " Best absolute value returned."
         warnings.warn(msg1 + msg2)
+        # Try selection again exclusively based on higher scores
+        top = keys[-1] - keys[-1] * (1 - max_step_fraction)
+        for step, group in grouped:
+            if step != keys[0] and step <= top:
+                best_vals = grouped.get_group(best_step)
+                current_mean = group.mean()
+                # check data has variance (avoid adding useless data)
+                if group.var() != 0 or best_vals.var() != 0:
+                    if current_mean > best_val:
+                        best_val = current_mean
+                        best_step = step
+
         return best_step
 
 
