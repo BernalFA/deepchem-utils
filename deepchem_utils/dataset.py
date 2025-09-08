@@ -54,7 +54,7 @@ class Dataset:
 def prepare_dataset(
         filepath: Union[str, Path], model_name: str, valid_indices: list,
         test_indices: list
-) -> tuple[dc.data.Dataset, dc.data.Dataset, dc.trans.Transformer]:
+) -> tuple[dc.data.Dataset, dc.data.Dataset, dc.data.Dataset, dc.trans.Transformer]:
     dataset = Dataset(
         filepath=filepath,
         feature_field="smiles",
@@ -63,7 +63,7 @@ def prepare_dataset(
         DAGtransform=True if model_name == "DAGModel" else False
     )
     dataset.prepare_dataset()
-    train_dataset, valid_dataset, _ = dataset.split_dataset(
+    train_dataset, valid_dataset, test_dataset = dataset.split_dataset(
                 valid_indices=valid_indices, test_indices=test_indices
     )
-    return train_dataset, valid_dataset, dataset.transformer
+    return train_dataset, valid_dataset, test_dataset, dataset.transformer
