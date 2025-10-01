@@ -1,23 +1,29 @@
-import deepchem as dc
+from deepchem.feat import (
+    MolGraphConvFeaturizer, ConvMolFeaturizer, DMPNNFeaturizer, DummyFeaturizer
+)
+from deepchem.models import GraphConvModel, DAGModel
+from deepchem.models.torch_models import (
+    MPNNModel, DMPNNModel, GCNModel, AttentiveFPModel, GATModel, Chemberta
+)
 
 
 FEATURIZERS = {
-    "MolGraphConvFeaturizer": dc.feat.MolGraphConvFeaturizer(use_edges=True),
-    "ConvMolFeaturizer": dc.feat.ConvMolFeaturizer(),
-    "DMPNNFeaturizer": dc.feat.DMPNNFeaturizer(),
-    "DummyFeaturizer": dc.feat.DummyFeaturizer(),
+    "MolGraphConvFeaturizer": MolGraphConvFeaturizer(use_edges=True),
+    "ConvMolFeaturizer": ConvMolFeaturizer(),
+    "DMPNNFeaturizer": DMPNNFeaturizer(),
+    "DummyFeaturizer": DummyFeaturizer(),
 }
 
 
 MODELS = {
-    "GraphConvModel": dc.models.GraphConvModel,
-    "MPNNModel": dc.models.torch_models.MPNNModel,
-    "DMPNNModel": dc.models.torch_models.DMPNNModel,
-    "GCNModel": dc.models.torch_models.GCNModel,
-    "AttentiveFPModel": dc.models.torch_models.AttentiveFPModel,
-    "GATModel": dc.models.torch_models.GATModel,
-    "DAGModel": dc.models.DAGModel,
-    "ChemBERTa": dc.models.torch_models.Chemberta,
+    "GraphConvModel": GraphConvModel,
+    "MPNNModel": MPNNModel,
+    "DMPNNModel": DMPNNModel,
+    "GCNModel": GCNModel,
+    "AttentiveFPModel": AttentiveFPModel,
+    "GATModel": GATModel,
+    "DAGModel": DAGModel,
+    "ChemBERTa": Chemberta,
 }
 
 

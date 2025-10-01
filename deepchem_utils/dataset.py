@@ -1,14 +1,17 @@
 from pathlib import Path
 from typing import Union
 
-import deepchem as dc
+from deepchem.data import Dataset, CSVLoader
+from deepchem.feat import Featurizer
+from deepchem.trans import Transformer, BalancingTransformer, DAGTransformer
+from deepchem.splits import SpecifiedSplitter
 
 from deepchem_utils.utils import featurizer4model
 
 
 class Dataset:
     def __init__(self, filepath: Union[str, Path], feature_field: str, tasks: str,
-                 featurizer: dc.feat.Featurizer, balancing: bool = True,
+                 featurizer: Featurizer, balancing: bool = True,
                  DAGtransform: bool = False):
         self.filepath = filepath
         self.featurizer = featurizer
@@ -19,28 +22,28 @@ class Dataset:
         self.transformer = None
 
     def prepare_dataset(self):
-        loader = dc.data.CSVLoader(tasks=self.tasks, feature_field=self.feature_field,
-                                   featurizer=self.featurizer)
+        loader = CSVLoader(tasks=self.tasks, feature_field=self.feature_field,
+                           featurizer=self.featurizer)
         dataset = loader.create_dataset(self.filepath)
         if self.DAGtransform:
             dataset = self._dag_transform(dataset)
         self.dataset = dataset
 
-    def _bal_transform(self, dataset: dc.data.Dataset) -> dc.data.Dataset:
-        transformer = dc.trans.BalancingTransformer(dataset=dataset)
+    def _bal_transform(self, dataset: Dataset) -> Dataset:
+        transformer = BalancingTransformer(dataset=dataset)
         dataset = transformer.transform(dataset)
         return dataset
 
-    def _dag_transform(self, dataset: dc.data.Dataset) -> dc.data.Dataset:
-        transformer = dc.trans.DAGTransformer()
+    def _dag_transform(self, dataset: Dataset) -> Dataset:
+        transformer = DAGTransformer()
         dataset = transformer.transform(dataset=dataset)
         self.transformer = transformer
         return dataset
 
     def split_dataset(
             self, valid_indices: list, test_indices: list
-    ) -> tuple[dc.data.Dataset, dc.data.Dataset, dc.data.Dataset]:
-        splitter = dc.splits.SpecifiedSplitter(
+    ) -> tuple[Dataset, Dataset, Dataset]:
+        splitter = SpecifiedSplitter(
             valid_indices=valid_indices, test_indices=test_indices
         )
         train_dataset, valid_dataset, test_dataset = splitter.train_valid_test_split(
@@ -54,7 +57,7 @@ class Dataset:
 def prepare_dataset(
         filepath: Union[str, Path], model_name: str, valid_indices: list,
         test_indices: list
-) -> tuple[dc.data.Dataset, dc.data.Dataset, dc.data.Dataset, dc.trans.Transformer]:
+) -> tuple[Dataset, Dataset, Dataset, Transformer]:
     dataset = Dataset(
         filepath=filepath,
         feature_field="smiles",
