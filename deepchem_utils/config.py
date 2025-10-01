@@ -17,6 +17,7 @@ MODELS = {
     "AttentiveFPModel": dc.models.torch_models.AttentiveFPModel,
     "GATModel": dc.models.torch_models.GATModel,
     "DAGModel": dc.models.DAGModel,
+    "ChemBERTa": dc.models.torch_models.Chemberta,
 }
 
 

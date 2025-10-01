@@ -10,6 +10,8 @@ def featurizer4model(model_name: str):
         featurizer = FEATURIZERS["MolGraphConvFeaturizer"]
     elif model_name == "DMPNNModel":
         featurizer = FEATURIZERS["DMPNNFeaturizer"]
+    elif model_name == "ChemBERTa":
+        featurizer = FEATURIZERS["DummyFeaturizer"]
     else:
         raise NotImplementedError(f"{model_name} not available")
     return featurizer
