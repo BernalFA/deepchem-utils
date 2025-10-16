@@ -29,3 +29,7 @@ class ModelFactory:
             self._registry[model_enum.name] = make_constructor(
                 model_enum.cls, model_enum.defaults
             )
+
+    @property
+    def available(self):
+        return sorted(list(self._registry.keys()))

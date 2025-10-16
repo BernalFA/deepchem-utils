@@ -23,3 +23,7 @@ class FeaturizerFactory:
     def _setup(self):
         for featurizer in FEATURIZERS:
             self._registry[featurizer.__name__] = make_constructor(featurizer)
+
+    @property
+    def available(self):
+        return sorted(list(self._registry.keys()))
