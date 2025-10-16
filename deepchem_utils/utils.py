@@ -1,9 +1,10 @@
 import math
 
-from deepchem_utils.featurizers import featurizer_factory
+from deepchem_utils.featurizers import FeaturizerFactory
 
 
 def featurizer4model(model_name: str, **kwargs):
+    featurizer_factory = FeaturizerFactory()
     if model_name in ["GraphConvModel", "DAGModel"]:
         featurizer = featurizer_factory.create("ConvMolFeaturizer")
     elif model_name in ["MPNNModel", "GATModel", "GCNModel", "AttentiveFPModel"]:
