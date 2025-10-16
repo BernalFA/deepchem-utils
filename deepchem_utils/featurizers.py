@@ -1,8 +1,8 @@
 from typing import Callable, Dict
 
 from deepchem.feat import (
-    MolGraphConvFeaturizer, ConvMolFeaturizer, DMPNNFeaturizer, DummyFeaturizer,
-    SmilesToSeq, GroverFeaturizer
+    ConvMolFeaturizer, DMPNNFeaturizer, DummyFeaturizer, GroverFeaturizer,
+    MolGraphConvFeaturizer, SmilesToSeq,
 )
 
 

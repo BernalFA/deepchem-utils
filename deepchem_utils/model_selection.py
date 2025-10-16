@@ -1,18 +1,17 @@
-import time
 import json
+import time
 import warnings
 from pathlib import Path
 from typing import Union
 
 import pandas as pd
-from scipy import stats
-from tqdm import tqdm
 from deepchem.data import Dataset
 from deepchem.trans import Transformer
 from deepchem.metrics import Metric
-
 from hyperopt import fmin, tpe, Trials, STATUS_OK, space_eval
 from hyperopt.early_stop import no_progress_loss
+from scipy import stats
+from tqdm import tqdm
 
 from deepchem_utils.callback import CustomValidationCallback
 from deepchem_utils.config import MODELS
