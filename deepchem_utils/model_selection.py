@@ -37,7 +37,7 @@ class Objective:
         model.fit(self.train_dataset, nb_epoch=self.epochs)
         score = model.evaluate(self.valid_dataset, [self.metrics], self.transformers)
         return {
-            "loss": 1.0 - score["f1_score"],
+            "loss": 1.0 - score[self.metrics.name],
             "status": STATUS_OK
         }
 
