@@ -6,14 +6,14 @@ from deepchem.feat import (
 )
 
 
-_FEATURIZERS = {
-    "ConvMolFeaturizer": ConvMolFeaturizer,
-    "DMPNNFeaturizer": DMPNNFeaturizer,
-    "DummyFeaturizer": DummyFeaturizer,
-    "GroverFeaturizer": GroverFeaturizer,
-    "MolGraphConvFeaturizer": MolGraphConvFeaturizer,
-    "SmilesToSeq": SmilesToSeq,
-}
+_FEATURIZERS = [
+    ConvMolFeaturizer,
+    DMPNNFeaturizer,
+    DummyFeaturizer,
+    GroverFeaturizer,
+    MolGraphConvFeaturizer,
+    SmilesToSeq,
+]
 
 
 class FeaturizerFactory:
@@ -31,8 +31,8 @@ class FeaturizerFactory:
 
 # Register all available featurizers
 featurizer_factory = FeaturizerFactory()
-for featurizer_name, featurizer in _FEATURIZERS.items():
+for featurizer in _FEATURIZERS:
     featurizer_factory.register(
-        featurizer_name,
+        featurizer.__name__,
         lambda featurizer=featurizer, **kwargs: featurizer(**kwargs)
     )
