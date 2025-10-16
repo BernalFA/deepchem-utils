@@ -1,19 +1,6 @@
 from typing import Callable, Dict
 
-from deepchem.feat import (
-    ConvMolFeaturizer, DMPNNFeaturizer, DummyFeaturizer, GroverFeaturizer,
-    MolGraphConvFeaturizer, SmilesToSeq,
-)
-
-
-_FEATURIZERS = [
-    ConvMolFeaturizer,
-    DMPNNFeaturizer,
-    DummyFeaturizer,
-    GroverFeaturizer,
-    MolGraphConvFeaturizer,
-    SmilesToSeq,
-]
+from deepchem_utils.config import FEATURIZERS
 
 
 def make_constructor(cls):
@@ -34,5 +21,5 @@ class FeaturizerFactory:
         return self._registry[name](**kwargs)
 
     def _setup(self):
-        for featurizer in _FEATURIZERS:
+        for featurizer in FEATURIZERS:
             self._registry[featurizer.__name__] = make_constructor(featurizer)

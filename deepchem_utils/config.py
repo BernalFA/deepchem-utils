@@ -1,7 +1,21 @@
+from deepchem.feat import (
+    ConvMolFeaturizer, DMPNNFeaturizer, DummyFeaturizer, GroverFeaturizer,
+    MolGraphConvFeaturizer, SmilesToSeq,
+)
 from deepchem.models import GraphConvModel, DAGModel, Smiles2Vec
 from deepchem.models.torch_models import (
     MPNNModel, DMPNNModel, GCNModel, AttentiveFPModel, GATModel, Chemberta, GroverModel
 )
+
+
+FEATURIZERS = [
+    ConvMolFeaturizer,
+    DMPNNFeaturizer,
+    DummyFeaturizer,
+    GroverFeaturizer,
+    MolGraphConvFeaturizer,
+    SmilesToSeq,
+]
 
 
 MODELS = {
