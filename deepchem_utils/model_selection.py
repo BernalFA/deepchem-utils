@@ -4,10 +4,12 @@ import warnings
 from pathlib import Path
 from typing import Union
 
-import deepchem as dc
 import pandas as pd
 from scipy import stats
 from tqdm import tqdm
+from deepchem.data import Dataset
+from deepchem.trans import Transformer
+from deepchem.metrics import Metric
 
 from hyperopt import fmin, tpe, Trials, STATUS_OK, space_eval
 from hyperopt.early_stop import no_progress_loss
@@ -41,9 +43,9 @@ class Objective:
         }
 
 
-def run_hyperopt_search(model_name: str, train_dataset: dc.data.Dataset,
-                        valid_dataset: dc.data.Dataset, params_dict: dict,
-                        metrics: dc.metrics.Metric,
+def run_hyperopt_search(model_name: str, train_dataset: Dataset,
+                        valid_dataset: Dataset, params_dict: dict,
+                        metrics: Metric,
                         output_filepath: Union[str, Path],
                         transformers: list,
                         n_trials: int = 100,
@@ -172,7 +174,7 @@ class SelectEpochs:
         self.output_file = output_file
 
     def repeated_evaluation(
-        self, train_dataset: dc.data.Dataset, valid_dataset: dc.data.Dataset,
+        self, train_dataset: Dataset, valid_dataset: Dataset,
         transformers: list = [], n_times: int = 5
     ) -> int:
         self._set_converter(train_dataset)
@@ -189,8 +191,8 @@ class SelectEpochs:
         return epochs
 
     def evaluation(
-            self, train_dataset: dc.data.Dataset, valid_dataset: dc.data.Dataset,
-            transformer: Union[dc.trans.Transformer, list] = []
+            self, train_dataset: Dataset, valid_dataset: Dataset,
+            transformer: Union[Transformer, list] = []
     ) -> int:
         self._set_converter(train_dataset)
         callback = self._set_callback(
@@ -205,8 +207,8 @@ class SelectEpochs:
         return epochs
 
     def _set_callback(
-            self, valid_dataset: dc.data.Dataset, interval: int,
-            transformer: Union[dc.trans.Transformer, list]
+            self, valid_dataset: Dataset, interval: int,
+            transformer: Union[Transformer, list]
     ) -> CustomValidationCallback:
         callback = CustomValidationCallback(
             valid_dataset, interval=interval, metrics=self.metrics,
@@ -216,7 +218,7 @@ class SelectEpochs:
         )
         return callback
 
-    def _set_converter(self, train_dataset: dc.data.Dataset):
+    def _set_converter(self, train_dataset: Dataset):
         self._converter = IntervalEpochConv(
             train_dataset.X.shape[0], self.params["batch_size"]
         )
@@ -228,7 +230,7 @@ class SelectEpochs:
         epochs = self._converter.calculate_early_stopping_epoch(best)
         return epochs
 
-    def select_early_stop_from_data(self, train_dataset: dc.data.Dataset) -> int:
+    def select_early_stop_from_data(self, train_dataset: Dataset) -> int:
         self._set_converter(train_dataset)
         epochs = self._select_early_stop()
         return epochs
