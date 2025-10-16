@@ -14,8 +14,11 @@ from scipy import stats
 from tqdm import tqdm
 
 from deepchem_utils.callback import CustomValidationCallback
-from deepchem_utils.config import MODELS
+from deepchem_utils.models import ModelFactory
 from deepchem_utils.utils import IntervalEpochConv
+
+
+model_factory = ModelFactory()
 
 
 class Objective:
@@ -31,9 +34,7 @@ class Objective:
         self.epochs = epochs
 
     def __call__(self, params):
-        model = MODELS[self.model_name](
-            **params
-        )
+        model = model_factory.create(self.model_name, **params)
         model.fit(self.train_dataset, nb_epoch=self.epochs)
         score = model.evaluate(self.valid_dataset, [self.metrics], self.transformers)
         return {
@@ -183,7 +184,7 @@ class SelectEpochs:
             transformer=transformers
         )
         for _ in tqdm(range(n_times)):
-            model = MODELS[self.model_name](**self.params)
+            model = model_factory.create(self.model_name, **self.params)
             model.fit(train_dataset, nb_epoch=self.nb_epoch, callbacks=callback)
         if Path.exists(self.output_file):
             epochs = self._select_early_stop()
@@ -199,7 +200,7 @@ class SelectEpochs:
             interval=self._converter.calculate_interval(self.frequency),
             transformer=transformer
         )
-        model = MODELS[self.model_name](**self.params)
+        model = model_factory.create(self.model_name, **self.params)
         model.fit(train_dataset, nb_epoch=self.nb_epoch, callbacks=callback)
         if Path.exists(self.output_file):
             epochs = self._select_early_stop()
