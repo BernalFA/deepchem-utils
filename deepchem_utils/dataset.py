@@ -2,7 +2,7 @@ from pathlib import Path
 from typing import Union
 
 from deepchem.data import Dataset, CSVLoader
-from deepchem.feat import Featurizer
+from deepchem.feat import Featurizer, create_char_to_idx
 from deepchem.trans import Transformer, BalancingTransformer, DAGTransformer
 from deepchem.splits import SpecifiedSplitter
 
@@ -58,11 +58,16 @@ def prepare_dataset(
         filepath: Union[str, Path], model_name: str, valid_indices: list,
         test_indices: list
 ) -> tuple[Dataset, Dataset, Dataset, Transformer]:
+    if model_name == "Smiles2Vec":
+        char_to_idx = create_char_to_idx(filename=filepath, smiles_field="smiles")
+        featurizer = featurizer4model(model_name, char_to_idx=char_to_idx)
+    else:
+        featurizer = featurizer4model(model_name)
     dataset = Dataset(
         filepath=filepath,
         feature_field="smiles",
         tasks=["active"],
-        featurizer=featurizer4model(model_name),
+        featurizer=featurizer,
         DAGtransform=True if model_name == "DAGModel" else False
     )
     dataset.prepare_dataset()

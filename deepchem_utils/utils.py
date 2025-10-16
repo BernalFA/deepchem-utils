@@ -3,7 +3,7 @@ import math
 from deepchem_utils.featurizers import featurizer_factory
 
 
-def featurizer4model(model_name: str):
+def featurizer4model(model_name: str, **kwargs):
     if model_name in ["GraphConvModel", "DAGModel"]:
         featurizer = featurizer_factory.create("ConvMolFeaturizer")
     elif model_name in ["MPNNModel", "GATModel", "GCNModel", "AttentiveFPModel"]:
@@ -12,6 +12,8 @@ def featurizer4model(model_name: str):
         featurizer = featurizer_factory.create("DMPNNFeaturizer")
     elif model_name == "ChemBERTa":
         featurizer = featurizer_factory.create("DummyFeaturizer")
+    elif model_name == "Smiles2Vec":
+        featurizer = featurizer_factory.create("SmilesToSeq", **kwargs)
     else:
         raise NotImplementedError(f"{model_name} not available")
     return featurizer
