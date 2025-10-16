@@ -14,6 +14,8 @@ def featurizer4model(model_name: str, **kwargs):
         featurizer = featurizer_factory.create("DummyFeaturizer")
     elif model_name == "Smiles2Vec":
         featurizer = featurizer_factory.create("SmilesToSeq", **kwargs)
+    elif model_name == "GroverModel":
+        featurizer = featurizer_factory.create("GroverFeaturizer", **kwargs)
     else:
         raise NotImplementedError(f"{model_name} not available")
     return featurizer

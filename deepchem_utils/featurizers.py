@@ -2,7 +2,7 @@ from typing import Callable, Dict
 
 from deepchem.feat import (
     MolGraphConvFeaturizer, ConvMolFeaturizer, DMPNNFeaturizer, DummyFeaturizer,
-    SmilesToSeq
+    SmilesToSeq, GroverFeaturizer
 )
 
 
@@ -12,6 +12,7 @@ _FEATURIZERS = {
     "DMPNNFeaturizer": DMPNNFeaturizer,
     "DummyFeaturizer": DummyFeaturizer,
     "SmilesToSeq": SmilesToSeq,
+    "GroverFeaturizer": GroverFeaturizer,
 }
 
 

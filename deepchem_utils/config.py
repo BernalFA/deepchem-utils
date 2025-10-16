@@ -1,6 +1,6 @@
-from deepchem.models import GraphConvModel, DAGModel
+from deepchem.models import GraphConvModel, DAGModel, Smiles2Vec
 from deepchem.models.torch_models import (
-    MPNNModel, DMPNNModel, GCNModel, AttentiveFPModel, GATModel, Chemberta
+    MPNNModel, DMPNNModel, GCNModel, AttentiveFPModel, GATModel, Chemberta, GroverModel
 )
 
 
@@ -13,6 +13,8 @@ MODELS = {
     "GATModel": GATModel,
     "DAGModel": DAGModel,
     "ChemBERTa": Chemberta,
+    "Smiles2Vec": Smiles2Vec,
+    "GroverModel": GroverModel,
 }
 
 

@@ -2,7 +2,7 @@ from pathlib import Path
 from typing import Union
 
 from deepchem.data import Dataset, CSVLoader
-from deepchem.feat import Featurizer, create_char_to_idx
+from deepchem.feat import Featurizer, create_char_to_idx, CircularFingerprint
 from deepchem.trans import Transformer, BalancingTransformer, DAGTransformer
 from deepchem.splits import SpecifiedSplitter
 
@@ -61,6 +61,9 @@ def prepare_dataset(
     if model_name == "Smiles2Vec":
         char_to_idx = create_char_to_idx(filename=filepath, smiles_field="smiles")
         featurizer = featurizer4model(model_name, char_to_idx=char_to_idx)
+    elif model_name == "GroverModel":
+        fg = CircularFingerprint()
+        featurizer = featurizer4model(model_name, features_generator=fg)
     else:
         featurizer = featurizer4model(model_name)
     dataset = Dataset(
