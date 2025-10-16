@@ -1,18 +1,7 @@
-from deepchem.feat import (
-    MolGraphConvFeaturizer, ConvMolFeaturizer, DMPNNFeaturizer, DummyFeaturizer
-)
 from deepchem.models import GraphConvModel, DAGModel
 from deepchem.models.torch_models import (
     MPNNModel, DMPNNModel, GCNModel, AttentiveFPModel, GATModel, Chemberta
 )
-
-
-FEATURIZERS = {
-    "MolGraphConvFeaturizer": MolGraphConvFeaturizer(use_edges=True),
-    "ConvMolFeaturizer": ConvMolFeaturizer(),
-    "DMPNNFeaturizer": DMPNNFeaturizer(),
-    "DummyFeaturizer": DummyFeaturizer(),
-}
 
 
 MODELS = {

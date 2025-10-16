@@ -1,17 +1,17 @@
 import math
 
-from deepchem_utils.config import FEATURIZERS
+from deepchem_utils.featurizers import featurizer_factory
 
 
 def featurizer4model(model_name: str):
     if model_name in ["GraphConvModel", "DAGModel"]:
-        featurizer = FEATURIZERS["ConvMolFeaturizer"]
+        featurizer = featurizer_factory.create("ConvMolFeaturizer")
     elif model_name in ["MPNNModel", "GATModel", "GCNModel", "AttentiveFPModel"]:
-        featurizer = FEATURIZERS["MolGraphConvFeaturizer"]
+        featurizer = featurizer_factory.create("MolGraphConvFeaturizer", use_edges=True)
     elif model_name == "DMPNNModel":
-        featurizer = FEATURIZERS["DMPNNFeaturizer"]
+        featurizer = featurizer_factory.create("DMPNNFeaturizer")
     elif model_name == "ChemBERTa":
-        featurizer = FEATURIZERS["DummyFeaturizer"]
+        featurizer = featurizer_factory.create("DummyFeaturizer")
     else:
         raise NotImplementedError(f"{model_name} not available")
     return featurizer
