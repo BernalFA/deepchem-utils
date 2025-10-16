@@ -21,7 +21,7 @@ class Objective:
     def __init__(
             self, model_name, train_dataset, valid_dataset, metrics, transformers=[],
             epochs=10
-        ):
+    ):
         self.model_name = model_name
         self.train_dataset = train_dataset
         self.valid_dataset = valid_dataset
@@ -90,34 +90,6 @@ def run_hyperopt_search(model_name: str, train_dataset: dc.data.Dataset,
     history["status"] = [t["result"]["status"] for t in trials.trials]
 
     history.to_csv(output_filepath / "history.csv", index=False)
-
-
-# def run_hyperopt_search(model_name: str, train_dataset: dc.data.Dataset,
-#                         valid_dataset: dc.data.Dataset, params_dict: dict,
-#                         metrics: dc.metrics.Metric,
-#                         output_filepath: Union[str, Path],
-#                         transformers: list,
-#                         nb_epoch: int = 10):
-#     start = time.time()
-#     optimizer = dc.hyper.GridHyperparamOpt(MODELS[model_name])
-#     best_model, best_hyperparams, all_results = optimizer.hyperparam_search(
-#         params_dict, train_dataset, valid_dataset, metrics,
-#         output_transformers=transformers, nb_epoch=nb_epoch
-#     )
-#     end = time.time()
-
-#     print("####" + "#" * len(model_name))
-#     print(f"# {model_name} #")
-#     print("####" + "#" * len(model_name))
-#     print(f'Total time required: {time.strftime("%H:%M:%S", time.gmtime(end - start))}')
-#     print(best_hyperparams)
-#     print(f"Best value: {max(all_results.values())}")
-#     if output_filepath:
-#         if isinstance(output_filepath, str):
-#             output_filepath = Path(output_filepath)
-#         output = output_filepath / f"{model_name}_best_hyperparameters.json"
-#         with open(output, "w") as file:
-#             json.dump(best_hyperparams, file, indent=4)
 
 
 def get_best_steps_number(df: pd.DataFrame, alpha: int = 0.05, patience: int = 3,
