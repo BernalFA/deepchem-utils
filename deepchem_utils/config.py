@@ -1,3 +1,5 @@
+from enum import Enum
+
 from deepchem.feat import (
     ConvMolFeaturizer, DMPNNFeaturizer, DummyFeaturizer, GroverFeaturizer,
     MolGraphConvFeaturizer, SmilesToSeq,
@@ -18,18 +20,39 @@ FEATURIZERS = [
 ]
 
 
-MODELS = {
-    "GraphConvModel": GraphConvModel,
-    "MPNNModel": MPNNModel,
-    "DMPNNModel": DMPNNModel,
-    "GCNModel": GCNModel,
-    "AttentiveFPModel": AttentiveFPModel,
-    "GATModel": GATModel,
-    "DAGModel": DAGModel,
-    "ChemBERTa": Chemberta,
-    "Smiles2Vec": Smiles2Vec,
-    "GroverModel": GroverModel,
-}
+class ModelsEnum(Enum):
+    GraphConv = (GraphConvModel,
+                 {"n_tasks": 1, "n_classes": 2})
+    MPNN = (MPNNModel,
+            {"n_tasks": 1, "n_classes": 2})
+    DMPNN = (DMPNNModel,
+             {"n_tasks": 1, "n_classes": 2})
+    GCN = (GCNModel,
+           {"n_tasks": 1, "n_classes": 2})
+    AttentiveFP = (AttentiveFPModel,
+                   {"n_tasks": 1, "n_classes": 2})
+    GAT = (GATModel,
+           {"n_tasks": 1, "n_classes": 2})
+    DAG = (DAGModel,
+           {"n_tasks": 1, "n_classes": 2})
+    ChemBERTa = (Chemberta,
+                 {"n_tasks": 1, "n_classes": 2, "max_length": 512,
+                  "truncation": True, "padding": "max_length",
+                  "tokenizer_path": "DeepChem/ChemBERTa-77M-MLM"})
+    Smiles2Vec = (Smiles2Vec,
+                  {"n_tasks": 1, "n_classes": 2})
+    Grover = (GroverModel,
+              {"n_tasks": 1, "n_classes": 2, "task": "finetuning",
+               "features_dim": 2048, "hidden_size": 128,
+               "functional_group_size": 85})
+
+    @property
+    def cls(self):
+        return self.value[0]
+
+    @property
+    def defaults(self):
+        return self.value[1]
 
 
 class StepNotFoundError(Exception):
