@@ -18,11 +18,10 @@ class ModelFactory:
     def register(self, name: str, constructor: Callable):
         self._registry[name] = constructor
 
-    def create(self, name: str, mode: str, **kwargs):
+    def create(self, name: str, **kwargs):
         if name not in self._registry:
             raise ValueError(f"Model '{name}' not registered.")
         # add mode
-        kwargs["mode"] = mode
         return self._registry[name](**kwargs)
 
     def _setup(self):
