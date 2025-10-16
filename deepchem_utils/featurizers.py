@@ -7,12 +7,12 @@ from deepchem.feat import (
 
 
 _FEATURIZERS = {
-    "MolGraphConvFeaturizer": MolGraphConvFeaturizer,
     "ConvMolFeaturizer": ConvMolFeaturizer,
     "DMPNNFeaturizer": DMPNNFeaturizer,
     "DummyFeaturizer": DummyFeaturizer,
-    "SmilesToSeq": SmilesToSeq,
     "GroverFeaturizer": GroverFeaturizer,
+    "MolGraphConvFeaturizer": MolGraphConvFeaturizer,
+    "SmilesToSeq": SmilesToSeq,
 }
 
 
